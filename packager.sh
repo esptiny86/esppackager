@@ -195,6 +195,39 @@ init_release_folder()
 	fi
 }
 
+ESPSYNTH_PATH=espsynth
+ESPSYNTH_REPO=https://github.com/esptiny86/espsynth86.git
+ESPSYNTH_RELEASE_PATH=library
+
+init_espsynth_folder()
+{
+	if check_folder_git "$cwd/$ESPSYNTH_PATH"
+	then
+		echo "git already exists"
+		cd "$cwd/$RELEASE_PATH"
+		git checkout merge
+		git pull
+		cd $cwd
+	else
+		git clone ${ESPSYNTH_REPO} $ESPSYNTH_PATH
+		git checkout merge
+	fi
+}
+
+build_espsynth()
+{
+	cd $cwd/$ESPSYNTH_PATH
+	sh build_library.sh
+	cd $cwd
+}
+
+
+publish_espsynth()
+{
+	mkdir -p $cwd/$RELEASE_PATH/$ESPSYNTH_RELEASE_PATH
+	cp $cwd/$ESPSYNTH_PATH/library/*.zip $cwd/$RELEASE_PATH/$ESPSYNTH_RELEASE_PATH
+}
+
 push_release_folder()
 {
 	cd "$cwd/$RELEASE_PATH"
