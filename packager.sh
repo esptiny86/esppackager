@@ -73,7 +73,7 @@ function list_release()
 
 function version_is_not_released()
 {	
-	if [ -f "$cwd/$RELEASE_PATH/esp8266-${1}.zip" ]
+	if [ -f "$cwd/$RELEASE_PATH/board/esp8266-${1}.zip" ]
 	then
 		return 1 #true
 	else
@@ -95,7 +95,7 @@ function unzip_release_version()
 function zip_release_version()
 {
 	cd $cwd/$DOWNLOAD_PATH/
-	zip -m -r $cwd/$RELEASE_PATH/esp8266-${1}.zip esp8266-${1}
+	zip -m -r $cwd/$RELEASE_PATH/board/esp8266-${1}.zip esp8266-${1}
 	cd $cwd
 }
 
@@ -122,7 +122,7 @@ function publish_all_release()
 
 function generate_package_sha()
 {
-	local _SHA=`shasum -a 256 ${cwd}/${RELEASE_PATH}/esp8266-${1}.zip | cut -d ' ' -f 1`
+	local _SHA=`shasum -a 256 ${cwd}/${RELEASE_PATH}/board/esp8266-${1}.zip | cut -d ' ' -f 1`
 	eval "cat <<EOF
 	$(<${cwd}/${VERSION_PATH}/${1}/package.json)
 	" 2> /dev/null
@@ -173,7 +173,7 @@ process_package_json()
 
 	cd $cwd/$VERSION_PATH
 	for f in *; do
-	find $cwd/$RELEASE_PATH -name package_espsynth_index.json -type f -exec sed -i.bak s,https://github.com/esp8266/Arduino/releases/download/$f/esp8266-$f.zip,$RELEASE_URL/esp8266-$f.zip,g '{}' \;
+	find $cwd/$RELEASE_PATH -name package_espsynth_index.json -type f -exec sed -i.bak s,https://github.com/esp8266/Arduino/releases/download/$f/esp8266-$f.zip,$RELEASE_URL/board/esp8266-$f.zip,g '{}' \;
 	find $cwd/$RELEASE_PATH -name package_espsynth_index.json -type f -exec sed -i.bak s/\"name\"\ :\ \"esp8266\"/\"name\"\ :\ \"Espsynth86\"/g '{}' \;
 	
 	rm -fr $cwd/$RELEASE_PATH/*.json.bak
