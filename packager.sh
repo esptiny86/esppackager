@@ -12,6 +12,10 @@ RELEASE_REPO=https://github.com/esptiny86/espboard8266.git
 RELEASE_URL=https://esptiny86.github.io/espboard8266
 TEMPLATE_PATH=template
 
+ESPSYNTH_PATH=espsynth
+ESPSYNTH_REPO=https://github.com/esptiny86/espsynth86.git
+ESPSYNTH_RELEASE_PATH=library
+
 function ADD_RELEASE()
 {
 	RELEASE_VERSION+=("${1}")
@@ -196,20 +200,17 @@ init_release_folder()
 	fi
 }
 
-ESPSYNTH_PATH=espsynth
-ESPSYNTH_REPO=https://github.com/esptiny86/espsynth86.git
-ESPSYNTH_RELEASE_PATH=library
-
 init_espsynth_folder()
 {
 	if check_folder_git "$cwd/$ESPSYNTH_PATH"
 	then
-		echo "git already exists"
-		cd "$cwd/$RELEASE_PATH"
-		git checkout merge
-		git pull
+		echo "init_espysnth_folder - git espsynth already exists - pull update"
+		cd "$cwd/$ESPSYNTH_PATH"
+    pwd
+		git pull 
 		cd $cwd
 	else
+    echo "init_espysnth_folder - clone espsynth lib latest"
 		git clone ${ESPSYNTH_REPO} $ESPSYNTH_PATH
 		git checkout merge
 	fi
@@ -217,6 +218,7 @@ init_espsynth_folder()
 
 build_espsynth()
 {
+  echo "build_espsynth - compile library"
 	cd $cwd/$ESPSYNTH_PATH
 	sh build_library.sh
 	cd $cwd
@@ -225,12 +227,14 @@ build_espsynth()
 
 publish_espsynth()
 {
+  echo "publish_espsynth - copy compiled library zip to release folder"
 	mkdir -p $cwd/$RELEASE_PATH/$ESPSYNTH_RELEASE_PATH
 	cp $cwd/$ESPSYNTH_PATH/library/*.zip $cwd/$RELEASE_PATH/$ESPSYNTH_RELEASE_PATH
 }
 
 push_release_folder()
 {
+  echo "push_release_folder - upload build result to github"
 	cd "$cwd/$RELEASE_PATH"
 	git add .
 	git commit -m "new release"
@@ -257,10 +261,15 @@ function process_release()
 	cd $cwd
 }
 
-init_release_folder
-# process_release
-process_package_json
+# init_release_folder
+#process_release
+#process_package_json
+
+init_espsynth_folder
+build_espsynth
+publish_espsynth
 push_release_folder
+
 
 #iterate release
 #	download release
