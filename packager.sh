@@ -114,6 +114,21 @@ function patch_release_version()
 	cd $cwd
 }
 
+function add_espsynth_to_release_version()
+{
+	
+	cd $cwd/$DOWNLOAD_PATH/esp8266-${1}
+	rm -fr $cwd/$DOWNLOAD_PATH/esp8266-${1}/platform.txt
+	cp $cwd/$VERSION_PATH/${1}/platform.txt $cwd/$DOWNLOAD_PATH/esp8266-${1}/
+	# find . -name platform.txt -type f -exec sed -i.bak 's/ESP8266 Modules/Espsynth/g' '{}' \;
+	cd $cwd
+
+	cd $cwd/$ESPSYNTH_PATH
+	cp -r library/espsynth86-`git describe --tag` $cwd/$DOWNLOAD_PATH/esp8266-${1}/libraries
+	cd $cwd
+
+}
+
 function generate_package_json()
 {
 	echo ""
