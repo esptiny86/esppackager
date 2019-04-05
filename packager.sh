@@ -233,9 +233,13 @@ init_espsynth_folder()
 
 build_espsynth()
 {
-  echo "build_espsynth - compile library"
+	echo "build_espsynth - compile library"
 	cd $cwd/$ESPSYNTH_PATH
-	sh build_library.sh
+	git pull
+	sh makelib.sh
+    echo "build_espsynth - copy compiled library zip to packager release folder"
+	mkdir -p $cwd/$RELEASE_PATH/$ESPSYNTH_RELEASE_PATH
+	cp library/espsynth86-`git describe --tag`.zip $cwd/$RELEASE_PATH/$ESPSYNTH_RELEASE_PATH
 	cd $cwd
 }
 
